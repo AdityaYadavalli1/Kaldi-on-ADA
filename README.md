@@ -57,4 +57,12 @@ Made some changes to code so that it runs on ADA
 
 
 - To **data/lang_chain**
-  - Whenever you rerun run.sh, make sure that you delete this folder. Otherwise the program stops after 1-2 hour(s) and asks you delete this folder. Even though the error message points exactly where the error is (so you can figure it out) it just wastes a lot of time so rather do this before you do `./run.sh` 
+  - Whenever you rerun run.sh, make sure that you delete this folder. Otherwise the program stops after 1-2 hour(s) and asks you delete this folderz. Even though the error message points exactly where the error is (so you can figure it out) it just wastes a lot of time so rather do this before you do `./run.sh`
+
+## Some Useful Sources
+- ASR modelling with mini_librispeech recipe in Kaldi
+  - [Explanation of basics of ASR modelling with HMMs. Part 1](https://medium.com/@qianhwan/understanding-kaldi-recipes-with-mini-librispeech-example-part-1-hmm-models-472a7f4a0488)
+  - [Explanation of DNN acoustic modelling. Part 2](https://medium.com/@qianhwan/understanding-kaldi-recipes-with-mini-librispeech-example-part-2-dnn-models-d1b851a56c49)
+- [Understanding Example scripts with RM speech corpus](https://kaldi-asr.org/doc/tutorial_running.html)
+- [Step by Step guide for Acoustic Modelling in Kaldi](https://eleanorchodroff.com/tutorial/kaldi/training-acoustic-models.html)
+- Kaldi Forums are pretty active
