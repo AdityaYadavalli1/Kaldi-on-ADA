@@ -42,6 +42,7 @@ Made some changes to code so that it runs on ADA
       export train_cmd=run.pl
       export decode_cmd=run.pl
       export mkgraph_cmd="run.pl"
-      ```
+
+    ```
 - To **local/chain2/tuning/run_tdnn_1a.sh**
   - I got $cuda_cmd" is unbounded variable error. It pointed at line 297 in the file. So I changed "$cuda_cmd" to "$train_cmd". This might be a bug in Kaldi because I've seen a commit where all cuda_cmds were changed to train_cmds in another recipe. (or maybe I have to load cuda module. I have to check this). I did not get this error after changing this line though.  
