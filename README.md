@@ -30,7 +30,7 @@ Since its a very simple corpus you should get 0 WER. Something or this sort: **%
   - `cd egs/mini_librispeech/s5/` (asssuming you are the Kaldi directory already)
   - `./run.sh`
     - A good idea would be to use nohup. This makes sure that even if you lose your connection or if you logout, the program keeps running. And most times you want this to run in the background so that you can do something else meanwhile. For this, `nohup nice ./run.sh &`
-- This recipe needs the package **flac**. Some of the nodes don't have it installed. But fortunately for me, after trying out a few nodes, I know for sure that nodes [13, 23, 15, 18, 30, 32, 34] have it installed. I will add some more nodes to that list later on. Some nodes that don't have *flac* installed are [46, 58, 50, 55, 57, 48].
+- This recipe needs the package **flac**. Some of the nodes don't have it installed. But fortunately for me, after trying out a few nodes, I know for sure that nodes [13, 23, 15, 18, 30, 32, 34, 41] have it installed. I will add some more nodes to that list later on. Some nodes that don't have *flac* installed are [43, 46, 48, 50, 55, 57, 58, 48].
 Note: Or you can create virtualenv and install it there.
 - To request a specific node (although might take some more time than usual for it to get allocated to you): `sinteractive -c X -g Y -w gnodeXX` where X is the number of CPUs you want to request, Y is the number of GPUs you want to request and XX is the gnode number you want.
 
@@ -51,5 +51,10 @@ Made some changes to code so that it runs on ADA
 - To **local/chain2/tuning/run_tdnn_1a.sh**
   - I got $cuda_cmd" is unbounded variable error. It pointed at line 297 in the file. So I changed "$cuda_cmd" to "$train_cmd". This might be a bug in Kaldi because I've seen a commit where all cuda_cmds were changed to train_cmds in another recipe. (or maybe I have to load cuda module. I have to check this). I did not get this error after changing this line though.
 
+
 - To **data/train_clean_5_sp/feats.scp** (my guess is extracted features are kept here)
-    - Whenever you rerun run.sh (which you will. No one gets it right the first time). Make sure that you delete this file. Otherwise the program stops after 20-30 mins and asks you delete. Basically, this saves your time.
+    - Whenever you rerun run.sh (which you will. No one gets it right the first time), make sure that you delete this file. Otherwise the program stops after 1 hour and asks you delete. Even though the error message points exactly where the error is (so you can figure it out) it just wastes a lot of time so rather do this before you do `./run.sh`
+
+
+- To **data/lang_chain**
+  - Whenever you rerun run.sh, make sure that you delete this folder. Otherwise the program stops after 1-2 hour(s) and asks you delete this folder. Even though the error message points exactly where the error is (so you can figure it out) it just wastes a lot of time so rather do this before you do `./run.sh` 
