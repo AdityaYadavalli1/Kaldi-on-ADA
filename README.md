@@ -60,10 +60,10 @@ Made some changes to code so that it runs on ADA
 
 [MON 15th Jun '20]
 - Deleted all the folders that weren't there before I ran `./ran.sh` for the first time and ran `./ran.sh` again. The deleted folders are:
- - data
- - exp
- - corpus
- - mfcc\
+  - data
+  - exp
+  - corpus
+  - mfcc\
 - Got an error in **steps/chain2/train.sh**
  - **run.sh** calls **local/chain2/run_tdnn.sh** (default model) which in turn calls **steps/chain2/train.sh**.
  - [ERROR] steps/chain2/train.sh: error detected training on iteration 1
