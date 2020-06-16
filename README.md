@@ -72,6 +72,11 @@ Made some changes to code so that it runs on ADA
      - Tried the recommended command: `nvidia-smi -c 3`. I didn't have the permissions to run it.
 
 
+[TUE 16th Jun '20']
+- Tried to run it without GPU to see whether it can run without it. The idea was if it did then since the error was coming from CUDA. I can bypass it. That didn't work.
+- Tried to lower the number of jobs flag in a lot of scripts. This gave me new errors (something related to make_mfcc. I found this in make_mfcc logs. Error: **copy-feats: /lib64/libstdc++.so.6: version `glibcxx_3.4.21' not found (required by copy-feats)**) 
+
+
 ## Some Useful Sources
 - ASR modelling with mini_librispeech recipe in Kaldi
   - [Explanation of basics of ASR modelling with HMMs. Part 1](https://medium.com/@qianhwan/understanding-kaldi-recipes-with-mini-librispeech-example-part-1-hmm-models-472a7f4a0488)
