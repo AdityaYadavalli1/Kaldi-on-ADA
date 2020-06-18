@@ -72,9 +72,13 @@ Made some changes to code so that it runs on ADA
      - Tried the recommended command: `nvidia-smi -c 3`. I didn't have the permissions to run it.
 
 
-[TUE 16th Jun '20']
+[TUE 16th Jun '20]
 - Tried to run it without GPU to see whether it can run without it. The idea was if it did then since the error was coming from CUDA. I can bypass it. That didn't work.
-- Tried to lower the number of jobs flag in a lot of scripts. This gave me new errors (something related to make_mfcc. I found this in make_mfcc logs. Error: **copy-feats: /lib64/libstdc++.so.6: version `glibcxx_3.4.21' not found (required by copy-feats)**) 
+
+[THURS 18th Jun '20]\
+In **local/chain2/train.sh**
+- Changed number of jobs (both initial and final to 1) and added use-gpu = wait flag.
+  - Note: Make sure your node has flac installed or else you will get some more errors. 
 
 
 ## Some Useful Sources
