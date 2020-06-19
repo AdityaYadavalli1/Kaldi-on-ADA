@@ -78,7 +78,10 @@ Made some changes to code so that it runs on ADA
 [THURS 18th Jun '20]\
 In **local/chain2/train.sh**
 - Changed number of jobs (both initial and final to 1) and added use-gpu = wait flag.
-  - Note: Make sure your node has flac installed or else you will get some more errors. 
+  - Note: Make sure your node has flac installed or else you will get some more errors.
+- After making that change, I got **run.pl: 75 / 75 failed, log is in exp/chaina/tdnn2c_sp/raw_egs/log/get_egs.*.log** error when I ran `./local/chain2/run_tdnn.sh`\
+[FRI 19th Jun '20]
+  - Note: With these changes, I was able to run it on the SPL server. But at this point, for ADA, it seems as though we need to make some more changes to Kaldi scripts.
 
 
 ## Some Useful Sources
