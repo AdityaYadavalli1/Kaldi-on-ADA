@@ -26,6 +26,7 @@ Since its a very simple corpus you should get 0 WER. Something or this sort: **%
 [SAT-13th June '20]
 ## Trying out Kaldi Recipes
 ### Mini Librispeech
+#### Running the recipe successfully
 - To run the recipe:
   - `cd egs/mini_librispeech/s5/` (asssuming you are the Kaldi directory already)
   - `./run.sh`
@@ -51,7 +52,7 @@ Made some changes to code so that it runs on ADA
   - I got $cuda_cmd" is unbounded variable error. It pointed at line 297 in the file. So I changed "$cuda_cmd" to "$train_cmd". This might be a bug in Kaldi because I've seen a commit where all cuda_cmds were changed to train_cmds in another recipe. (or maybe I have to load cuda module. I have to check this). I did not get this error after changing this line though.
 
 
-- To **data/train_clean_5_sp/feats.scp** (my guess is extracted features are kept here)
+- To **data/train_clean_5_sp/feats.scp** (extracted features)
     - Whenever you rerun run.sh (which you will. No one gets it right the first time), make sure that you delete this file. Otherwise the program stops after 1 hour and asks you delete. Even though the error message points exactly where the error is (so you can figure it out) it just wastes a lot of time so rather do this before you do `./run.sh`
 
 
@@ -63,7 +64,7 @@ Made some changes to code so that it runs on ADA
   - data
   - exp
   - corpus
-  - mfcc\
+  - mfcc
 - Got an error in **steps/chain2/train.sh**
  - **run.sh** calls **local/chain2/run_tdnn.sh** (default model) which in turn calls **steps/chain2/train.sh**.
  - [ERROR] steps/chain2/train.sh: error detected training on iteration 1
@@ -82,6 +83,23 @@ In **local/chain2/train.sh**
 - After making that change, I got **run.pl: 75 / 75 failed, log is in exp/chaina/tdnn2c_sp/raw_egs/log/get_egs.*.log** error when I ran `./local/chain2/run_tdnn.sh`\
 [FRI 19th Jun '20]
   - Note: With these changes, I was able to run it on the SPL server. But at this point, for ADA, it seems as though we need to make some more changes to Kaldi scripts.
+
+[SAT 20th Jun '20]
+#### Understanding the recipe
+I will be going through `run.sh`. The top level script that calls other scripts.
+- Before Stage 0:
+The script `local/download_and_untar.sh` downloads the data you want and unzips it. First argument is the should tell the program where the user wants to download the data, second is url and the third is corpus part. This will any way be shown if you provide incorrect arguments.
+- **Stage 0:**
+This downloads 3 language models (why three? I don't know). First argument to the script called (`local/download_lm.sh`) is the base url and the second argument is the where those models are stored (folder).
+- **Stage 1:**
+In this stage, 5 scripts are called:
+  - `local/data_prep.sh`:
+  - `local/prepare_dict.sh`:
+  - `utils/prepare_lang.sh`:
+  - `local/format_lms.sh`:
+  - `utils/build_const_arpa_lm.sh`:
+- **Stage 2:**
+
 
 
 ## Some Useful Sources
