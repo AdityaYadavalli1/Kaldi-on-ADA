@@ -94,10 +94,26 @@ This downloads 3 language models (why three? I don't know). First argument to th
 - **Stage 1:**
 In this stage, 5 scripts are called:
   - `local/data_prep.sh`:
+  Creates all the important files (wav.scp, transcript, utt2spk, spk2gender, utt2dur) given that the data has SPEAKERS.txt file. This takes source directory as the first argument and destination directory as the second argument.
   - `local/prepare_dict.sh`:
+  Creates all the necessary steps for g2p. If lexicon_nosil.txt is not available, using CMUdict g2p (and Sequitur G2P*) lexicon_nosil.txt. With this all g2p files are created (lexicon.txt, silence.txt, nonsilence.txt, optional.txt, extraquestions.txt) . Arguments need:
+   - 1st argument: LM directory (in our case `data/local/lm`)
+   - 2nd argument: G2P model directory (it was not used in our case because we started from stage 3)
+   - 3rd argument: destination directory (where all the files made are stored)
   - `utils/prepare_lang.sh`:
+    - 1st argument: Source directory (the destination directory for `local/prepare_dict.sh`)
+    - 2nd argument: OOV word representation (eg: "UNK")
+    - 3rd argument: Temporary directory (this script needs a space to store some temporary files)
+    - 4th argument: Destination directory
+
+   With these, essentially, it will make **L.fst** (lexicon in fst format. The format used by kaldi to calculate scores) [all of this is usually stored in `data/lang`]
   - `local/format_lms.sh`:
-  - `utils/build_const_arpa_lm.sh`:
+    - optional argument: `utils/prepare_lang.sh` destination directory should be source directory for this file (by default it is `data/lang`)
+    - 2nd argument: LM directory (`data/local/lm` in this case)
+
+    This script converts arpa formatted language model to **G.fst** (grammer in fst format). Separate fst models (L and G) are avaiable in `${src_dir}_test_${lm_suffix}` where lm suffix could something of the form of tgsmall or tgmed or tglarge.
+  - `utils/build_const_arpa_lm.sh`: Converts arpa formatted language model to const arpa format. Arpa is the format a language model is in and constant arpa is the format that is needed for decoding (in `run.sh` this is run only on tglarge. We can run the previous script on tglarge too but that'll be too time consuming) 
+
 - **Stage 2:**
 
 
