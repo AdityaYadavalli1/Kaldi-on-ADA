@@ -91,6 +91,8 @@ I will be going through `run.sh`. The top level script that calls other scripts.
 The script `local/download_and_untar.sh` downloads the data you want and unzips it. First argument is the should tell the program where the user wants to download the data, second is url and the third is corpus part. This will any way be shown if you provide incorrect arguments.
 - **Stage 0:**
 This downloads 3 language models (why three? I don't know). First argument to the script called (`local/download_lm.sh`) is the base url and the second argument is the where those models are stored (folder).
+
+  [THURS 25th Jun '20]
 - **Stage 1:**
 In this stage, 5 scripts are called:
   - `local/data_prep.sh`:
@@ -112,9 +114,10 @@ In this stage, 5 scripts are called:
     - 2nd argument: LM directory (`data/local/lm` in this case)
 
     This script converts arpa formatted language model to **G.fst** (grammer in fst format). Separate fst models (L and G) are avaiable in `${src_dir}_test_${lm_suffix}` where lm suffix could something of the form of tgsmall or tgmed or tglarge.
-  - `utils/build_const_arpa_lm.sh`: Converts arpa formatted language model to const arpa format. Arpa is the format a language model is in and constant arpa is the format that is needed for decoding (in `run.sh` this is run only on tglarge. We can run the previous script on tglarge too but that'll be too time consuming) 
+  - `utils/build_const_arpa_lm.sh`: Converts arpa formatted language model to const arpa format. Arpa is the format a language model is in and constant arpa is the format that is needed for decoding (in `run.sh` this is run only on tglarge. We can run the previous script on tglarge too but that'll be too time consuming)
 
 - **Stage 2:**
+
 
 
 
@@ -123,5 +126,7 @@ In this stage, 5 scripts are called:
   - [Explanation of basics of ASR modelling with HMMs. Part 1](https://medium.com/@qianhwan/understanding-kaldi-recipes-with-mini-librispeech-example-part-1-hmm-models-472a7f4a0488)
   - [Explanation of DNN acoustic modelling. Part 2](https://medium.com/@qianhwan/understanding-kaldi-recipes-with-mini-librispeech-example-part-2-dnn-models-d1b851a56c49)
 - [Understanding Example scripts with RM speech corpus](https://kaldi-asr.org/doc/tutorial_running.html)
-- [Step by Step guide for Acoustic Modelling in Kaldi](https://eleanorchodroff.com/tutorial/kaldi/training-acoustic-models.html)
+- [Step by Step guide for Acoustic Modelling with Kaldi](https://eleanorchodroff.com/tutorial/kaldi/training-acoustic-models.html)
+- [Josh's Kaldi Notes. Good for basic theory](http://jrmeyer.github.io/asr/2016/02/01/Kaldi-notes.html)
+- [Step by Step guide for Modelling ASR with Kaldi](http://white.ucc.asn.au/Kaldi-Notes/install_notes)
 - Kaldi Forums are pretty active
