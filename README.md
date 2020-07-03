@@ -136,7 +136,17 @@ In stage 2 we extract mfcc features from wav files. For this, 3 scripts are call
     - 3rd argument: Resultant data
 
 - **Stage 3:**
-In stage 3, we train a monophone system 
+In stage 3, we train a monophone system. For this, 3 scripts are called:
+  - `steps/train_mono.sh`: There seems be a lot of parameters etc here that one can control when training (Eg: number of GMMs needed etc.) but essentially this trains a monophone model.
+      - 1st argument: Training data directory
+      - 2nd argument: lang directory (eg: `data/lang_nosp` or `data/lang`)
+      - 3rd argument: A place where the model can be stored (`exp/mono`). Apparently this can take a few gigabytes.
+  - `utils/mkgraph.sh`: This script creates a fully expanded decoding graph (HCLG) that represents all the language-model, pronunciation dictionary (lexicon), context-dependency, and HMM structure in our model. The output is a Finite State Transducer that has word-ids on the output, and pdf-ids on the input (these are indexes that resolve to Gaussian Mixture Models).
+    - 1st argument: lang directory
+    - 2nd argument: directory where the model is stored (`exp/mono`)
+    - 3rd argument: directory where the decoded graph can be stored (`exp/mono/graph_nosp`) [graph generation]
+  - `steps/decode.sh`: Estimate which sequence of words has the highest likelihood of matching the set of extracted feature vectors. This is similar to decoding in PBSMT. Here, they use beam search.
+  - `steps/align_si.sh`:
 
 
 
@@ -151,4 +161,6 @@ In stage 3, we train a monophone system
 - [Josh's Kaldi Notes. Good for basic theory](http://jrmeyer.github.io/asr/2016/02/01/Kaldi-notes.html)
 - [Step by Step guide for Modelling ASR with Kaldi. Might not be upto date](http://white.ucc.asn.au/Kaldi-Notes/install_notes)
 - [Malayalam digit recogniser recipe. Could be useful if I want to make a recipe later on](https://github.com/kavyamanohar/malayalam-spoken-digit-recognizer)
+- [Some theory on probabilitistic graph formuation and solving. Useful for decoding](https://drive.google.com/drive/folders/1wmncLdRsY27Av1oNzk7Jaa9xWhxGTPrQ)
+- [Best Series of articles that explain ASR theory](https://medium.com/@jonathan_hui/speech-recognition-series-71fd6784551a)
 - Kaldi Forums are pretty active
