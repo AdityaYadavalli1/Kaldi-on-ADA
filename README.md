@@ -151,7 +151,8 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
         - `gmm-align-compiled` aligns phone states according to the GMM models.
         - `gmm-acc-stats-ali` accumulate stats for GMM training.
         - `gmm-est` performs Maximum Likelihood to re-estimate the GMM-based acoustic models. (This time with different options)
-        **NOTE:** In this script we can change the beam search size. It is a hyper-parameter, change this from data to data to get optimal results.
+        
+        **NOTE:** In this script we can change the beam search size. It is a hyper-parameter, change this from data to data to get optimal results.\
         **NOTE1:** For any graph, the output symbol is words (specifically `word.txt`) and inputs are transition-ids (arcs in CD HMMs) (as opposed to pdf-ids which represent GMM states)
 
   - `utils/mkgraph.sh`: This script creates a fully expanded decoding graph (HoCoLoG) that represents all the language-model, pronunciation dictionary (lexicon), context-dependency, and HMM structure in our model. The output is a Finite State Transducer that has word-ids on the output, and pdf-ids on the input (these are indexes that resolve to Gaussian Mixture Models).
@@ -159,6 +160,7 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
     - 2nd argument: directory where the model is stored (`exp/mono`)
     - 3rd argument: directory where the decoded graph can be stored (`exp/mono/graph_nosp`) [graph generation]
   - `steps/decode.sh`: This script finally decodes the graph compiled using `mkgraph.sh` i.e we generate lattices (a graph-based record of the most likely utterances) using scores made by `local/score.sh`
+
   **Note:** “decoding” refers to the computation where we find the best sentence given the model.
   - `steps/align_si.sh`: It combines all the alignments learnt in different passes/epochs by `gmm-est` and `gmm-align-compiled`.
 
