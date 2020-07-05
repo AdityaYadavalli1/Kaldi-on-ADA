@@ -119,24 +119,25 @@ In this stage, 5 scripts are called:
   [FRI 26th Jun '20]
 - **Stage 2:**
 In stage 2 we extract mfcc features from wav files. For this, 3 scripts are called:
- - `steps/make_mfcc.sh`:
+  - `steps/make_mfcc.sh`:
     - 1st argument: Directory where the data is stored. (training)
     - 2nd argument: Where you want want the log files to be written. (optional argument)
     - 3rd argument: Where you want the extracted mfcc feats to be written. (optional argument)
 
     This extracts mfcc features from the wav files.   
- - `steps/compute_cmvn_stats.sh`:
+  - `steps/compute_cmvn_stats.sh`:
     - 1st argument: Training data directory
     - 2nd argument: Log directory
     - 3rd argument: Result files' directory
     Compute cepstral mean and variance statistics per speaker. (probably for speaker normalisation). MFCC features are stored in \*.ark files and the absolute filepaths are stored in \*.scp inside the 3rd argument (directory). For a more in depth explanation (I do not need it and for lack better documentation skills) you can refer [this](http://jrmeyer.github.io/misc/kaldi-documentation/kaldi-documentation.pdf)
- - `utils/subset_data_dir.sh`: A nice utility script. Given a data file with a specified number of utterances (a subset of utterances), it outputs a subset of utterances from the data file. You can shortest, last or first n utterances from the file by specifying it with the corresponding argument.
+  - `utils/subset_data_dir.sh`: A nice utility script. Given a data file with a specified number of utterances (a subset of utterances), it outputs a subset of utterances from the data file. You can shortest, last or first n utterances from the file by specifying it with the corresponding argument.
     - 1st argument: Option ([shortest, last, first n] utterances)
     - 2nd argument: Data
     - 3rd argument: Resultant data
 
 - **Stage 3:**
 In stage 3, we train a monophone system. For this, 3 scripts are called:
+  [SUN 5th Jul'20]
   - `steps/train_mono.sh`:
       - 1st argument: Training data directory
       - 2nd argument: lang directory (eg: `data/lang_nosp` or `data/lang`)
