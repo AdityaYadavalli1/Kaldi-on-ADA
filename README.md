@@ -137,16 +137,29 @@ In stage 2 we extract mfcc features from wav files. For this, 3 scripts are call
 
 - **Stage 3:**
 In stage 3, we train a monophone system. For this, 3 scripts are called:
-  - `steps/train_mono.sh`: There seems be a lot of parameters etc here that one can control when training (Eg: number of GMMs needed etc.) but essentially this trains a monophone model.
+  - `steps/train_mono.sh`:
       - 1st argument: Training data directory
       - 2nd argument: lang directory (eg: `data/lang_nosp` or `data/lang`)
       - 3rd argument: A place where the model can be stored (`exp/mono`). Apparently this can take a few gigabytes.
-  - `utils/mkgraph.sh`: This script creates a fully expanded decoding graph (HCLG) that represents all the language-model, pronunciation dictionary (lexicon), context-dependency, and HMM structure in our model. The output is a Finite State Transducer that has word-ids on the output, and pdf-ids on the input (these are indexes that resolve to Gaussian Mixture Models).
+      Scripts it calls:
+        - `gmm init mono` with training features extracted in the previous stage. This creates a phonetic decision tree with only the root because all GMMs are initialised to the same value. One can see the topology of HMMs in `data/lang/topo`.
+        - `compile-train-graphs` which generates a training graph - one FST per training utterance. These FSTs encode HMM structure for that training utterance. The FSTs' input-symbols are transitions-ids which includes pdf-ids (which represents GMM acoustic state) [transition ids essentially encode audio frame] and output-symbols are words. This FST also includes cost (mostly including the cost coming from lexicon i.e pronunciation probability) but the transition probability of the HMM model will only be added later during training (word-word or phone-phone cost is added later)
+        - `align-equal-compiled` this performs the most naïve yet the best the guess when we don't know anything - equally spaced alignments. That is this assumes that all HMM states are equally spaced.
+        - `gmm-est` force aligns using Viterbi Training. Using this, GMMs are re-estimated.
+        Inside the training loop the following scripts are called: [basically EM algorithm is applied. Baum-Welch in a sense]
+        - `gmm-align-compiled` aligns phone states according to the GMM models.
+        - `gmm-acc-stats-ali` accumulate stats for GMM training.
+        - `gmm-est` performs Maximum Likelihood to re-estimate the GMM-based acoustic models. (This time with different options)
+        **NOTE:** In this script we can change the beam search size. It is a hyper-parameter, change this from data to data to get optimal results.
+        **NOTE1:** For any graph, the output symbol is words (specifically `word.txt`) and inputs are transition-ids (arcs in CD HMMs) (as opposed to pdf-ids which represent GMM states)
+
+  - `utils/mkgraph.sh`: This script creates a fully expanded decoding graph (HoCoLoG) that represents all the language-model, pronunciation dictionary (lexicon), context-dependency, and HMM structure in our model. The output is a Finite State Transducer that has word-ids on the output, and pdf-ids on the input (these are indexes that resolve to Gaussian Mixture Models).
     - 1st argument: lang directory
     - 2nd argument: directory where the model is stored (`exp/mono`)
     - 3rd argument: directory where the decoded graph can be stored (`exp/mono/graph_nosp`) [graph generation]
-  - `steps/decode.sh`: Estimate which sequence of words has the highest likelihood of matching the set of extracted feature vectors. This is similar to decoding in PBSMT. Here, they use beam search.
-  - `steps/align_si.sh`:
+  - `steps/decode.sh`: This script finally decodes the graph compiled using `mkgraph.sh` i.e we generate lattices (a graph-based record of the most likely utterances) using scores made by `local/score.sh`
+  **Note:** “decoding” refers to the computation where we find the best sentence given the model.
+  - `steps/align_si.sh`: It combines all the alignments learnt in different passes/epochs by `gmm-est` and `gmm-align-compiled`.
 
 
 
@@ -163,4 +176,5 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
 - [Malayalam digit recogniser recipe. Could be useful if I want to make a recipe later on](https://github.com/kavyamanohar/malayalam-spoken-digit-recognizer)
 - [Some theory on probabilitistic graph formuation and solving. Useful for decoding](https://drive.google.com/drive/folders/1wmncLdRsY27Av1oNzk7Jaa9xWhxGTPrQ)
 - [Best Series of articles that explain ASR theory](https://medium.com/@jonathan_hui/speech-recognition-series-71fd6784551a)
+- [Povey's lectures. Old and not upto date but very well explained](http://www.danielpovey.com/kaldi-lectures.html)
 - Kaldi Forums are pretty active
