@@ -162,7 +162,7 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
   - `steps/decode.sh`: This script finally decodes the graph compiled using `mkgraph.sh` i.e we generate lattices (a graph-based record of the most likely utterances) using scores made by `local/score.sh`
 
   **Note:** “decoding” refers to the computation where we find the best sentence given the model.
-  - `steps/align_si.sh`: It combines all the alignments learnt in different passes/epochs by `gmm-est` and `gmm-align-compiled`. (audio frames with monophones)
+  - `steps/align_si.sh`: It combines all the alignments learnt in different passes/epochs by `gmm-est` and `gmm-align-compiled`. (audio frames with monophones) [check this once]
 
 
 - **Stage 4**
@@ -179,10 +179,13 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
    Then inside the training loop again an EM algorithm is run (similar to monphone modelling). The following scripts are called: `gmm-align-compiled`, `gmm-acc-stats-ali`, `gmm-est`. All three scripts are explained in detail in monophone modelling.   
   - `utils/mkgraph.sh`: Explained in detail in stage 3
   - `steps/decode.sh`: Explained in detail in stage 3
-  - `steps/lmrescore.sh`: At this stage the lattice (which essentially contains a graph that encodes n-best hypothesis) is rescored. Here, we decouple acoustic and language modelling scores on lattice, rescore acoustic based on the new model. We also use a more complex language model (since the search space is decreased now) -possibly trained on more data or higher n-gram model. Still have a few doubts here: \
-    1. I am still wondering what phi matcher is in mode 4
-    2. Lattice scale for newlm is also is -1 (from mode 2 to mode 4)
-  - `steps/lmrescore_const_arpa.sh`:
+  - `steps/lmrescore.sh`: At this stage the lattice (which essentially contains a graph that encodes n-best hypothesis) is rescored. Here, we decouple acoustic and language modelling scores on lattice, rescore acoustic based on the new model. We also use a more complex language model (since the search space is decreased now) -possibly trained on more data or higher n-gram model. Still have a few doubts here:
+    1. I am still wondering what phi matcher is in mode 4? Ans: adds backoff arcs. Essentially the new lm that it takes is the backoff model.
+    2. Why is lattice scale for newlm also -1 (from mode 2 to mode 4)? Ans: I think when removing the old lm we scale the acoustic and language model to -1. Now when we pipe this lattice to a later stage this scaling for new lm should be done relative to old lm. Thats why new lm scaling is -1.  
+  - `steps/lmrescore_const_arpa.sh`: This also does something similar to `lmrescore.sh` but on a larger scale due to the way the language model is formatted (arpa)
+
+    **Note:** After `lmrescore.sh` and `lmrescore_const_arpa.sh` `score.sh` is called. This script essentially find the WER (or CER) whichever is specified for that the model currently created.
+  - `steps/align_si.sh`: Explained in stage 3. Here we align audio frames with triphones (context dependent phones)
 
 
 
@@ -200,5 +203,6 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
 - [Some theory on probabilitistic graph formuation and solving. Useful for decoding](https://drive.google.com/drive/folders/1wmncLdRsY27Av1oNzk7Jaa9xWhxGTPrQ)
 - [Best Series of articles that explain ASR theory](https://medium.com/@jonathan_hui/speech-recognition-series-71fd6784551a)
 - [Povey's lectures. Old and not upto date but very well explained](http://www.danielpovey.com/kaldi-lectures.html)
-- [Very detailed explanation of how Kaldi works. Mostly from language modelling perspective for Icelandic language](https://skemman.is/bitstream/1946/31280/1/msc_anna_vigdis_2018.pdf)
+- [Very detailed explanation of how Kaldi works. Mostly for Icelandic language](https://skemman.is/bitstream/1946/31280/1/msc_anna_vigdis_2018.pdf)
+- [To understand Kaldi Lattices](https://kaldi-asr.org/doc/lattices.html)
 - Kaldi Forums are pretty active
