@@ -179,7 +179,7 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
    Then inside the training loop again an EM algorithm is run (similar to monphone modelling). The following scripts are called: `gmm-align-compiled`, `gmm-acc-stats-ali`, `gmm-est`. All three scripts are explained in detail in monophone modelling.   
   - `utils/mkgraph.sh`: Explained in detail in stage 3
   - `steps/decode.sh`: Explained in detail in stage 3
-  - `steps/lmrescore.sh`: At this stage the lattice (which essentially contains a graph that encodes n-best hypothesis) is rescored. At this stage, we decouple acoustic and language modelling scores on lattice, rescore acoustic based on the new model. At this stage, we also use a more complex language model (since the search space is decreased now) -possibly trained on more data or higher n-gram model.
+  - `steps/lmrescore.sh`: At this stage the lattice (which essentially contains a graph that encodes n-best hypothesis) is rescored. Here, we decouple acoustic and language modelling scores on lattice, rescore acoustic based on the new model. We also use a more complex language model (since the search space is decreased now) -possibly trained on more data or higher n-gram model.
   - `steps/lmrescore_const_arpa.sh`:
 
 

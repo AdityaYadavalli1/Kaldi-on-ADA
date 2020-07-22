@@ -1,0 +1,35 @@
+# nnet3-chain-train2 --out-of-range-regularize=0.01 --write-cache=exp/chaina/tdnn2c_sp/cache.3 --read-cache=exp/chaina/tdnn2c_sp/cache.2 --use-gpu=yes --apply-deriv-weights=false --leaky-hmm-coefficient=0.1 --xent-regularize=0.1 --print-interval=10 --max-param-change=2.0 --momentum=0.0 --l2-regularize-factor=0.3333333333333333 --srand=0 "nnet3-copy --learning-rate=0.0018568974566737816 exp/chaina/tdnn2c_sp/2.raw - |" exp/chaina/tdnn2c_sp/egs/misc "ark:nnet3-chain-copy-egs  --frame-shift=1 scp:exp/chaina/tdnn2c_sp/egs/train.2.scp ark:- | nnet3-chain-shuffle-egs --buffer-size=1000 --srand=2 ark:- ark:- | nnet3-chain-merge-egs  --minibatch-size=32 ark:- ark:-|" exp/chaina/tdnn2c_sp/3.1.raw 
+# Started at Tue Jun 16 15:27:29 IST 2020
+#
+nnet3-chain-train2 --out-of-range-regularize=0.01 --write-cache=exp/chaina/tdnn2c_sp/cache.3 --read-cache=exp/chaina/tdnn2c_sp/cache.2 --use-gpu=yes --apply-deriv-weights=false --leaky-hmm-coefficient=0.1 --xent-regularize=0.1 --print-interval=10 --max-param-change=2.0 --momentum=0.0 --l2-regularize-factor=0.3333333333333333 --srand=0 'nnet3-copy --learning-rate=0.0018568974566737816 exp/chaina/tdnn2c_sp/2.raw - |' exp/chaina/tdnn2c_sp/egs/misc 'ark:nnet3-chain-copy-egs  --frame-shift=1 scp:exp/chaina/tdnn2c_sp/egs/train.2.scp ark:- | nnet3-chain-shuffle-egs --buffer-size=1000 --srand=2 ark:- ark:- | nnet3-chain-merge-egs  --minibatch-size=32 ark:- ark:-|' exp/chaina/tdnn2c_sp/3.1.raw 
+WARNING (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuId():cu-device.cc:228) Not in compute-exclusive mode.  Suggestion: use 'nvidia-smi -c 3' to set compute exclusive mode
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuIdAuto():cu-device.cc:408) Selecting from 2 GPUs
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuIdAuto():cu-device.cc:423) cudaSetDevice(0): GeForce GTX 1080 Ti	free:10517M, used:661M, total:11178M, free/total:0.940824
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuIdAuto():cu-device.cc:423) cudaSetDevice(1): GeForce GTX 1080 Ti	free:10825M, used:353M, total:11178M, free/total:0.968377
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuIdAuto():cu-device.cc:471) Device: 1, mem_ratio: 0.968377
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuId():cu-device.cc:352) Trying to select device: 1
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:SelectGpuIdAuto():cu-device.cc:481) Success selecting device 1 free mem ratio: 0.968377
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:FinalizeActiveGpu():cu-device.cc:308) The active GPU is [1]: GeForce GTX 1080 Ti	free:4749M, used:6429M, total:11178M, free/total:0.424833 version 6.1
+nnet3-copy --learning-rate=0.0018568974566737816 exp/chaina/tdnn2c_sp/2.raw - 
+LOG (nnet3-chain-train2[5.5.708~1-fd88b]:PrintMemoryUsage():cu-allocator.cc:368) Memory usage: 0/0 bytes currently allocated/total-held; 0/0 blocks currently allocated/free; largest free/allocated block sizes are 0/0; time taken total/cudaMalloc is 0/0.00173306, synchronized the GPU 0 times out of 0 frees; device memory info: free:591M, used:10587M, total:11178M, free/total:0.0528693maximum allocated: 0current allocated: 0
+ERROR (nnet3-chain-train2[5.5.708~1-fd88b]:AllocateNewRegion():cu-allocator.cc:519) Failed to allocate a memory region of 621805568 bytes.  Possibly this is due to sharing the GPU.  Try switching the GPUs to exclusive mode (nvidia-smi -c 3) and using the option --use-gpu=wait to scripts like steps/nnet3/chain/train.py.  Memory info: free:1185M, used:9993M, total:11178M, free/total:0.106007 CUDA error: 'out of memory'
+
+[ Stack-Trace: ]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-base.so(kaldi::MessageLogger::LogMessage() const+0xa5d) [0x14f7b695f62b]
+nnet3-chain-train2(kaldi::MessageLogger::LogAndThrow::operator=(kaldi::MessageLogger const&)+0x21) [0x410e9b]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-cudamatrix.so(kaldi::CuMemoryAllocator::AllocateNewRegion(unsigned long)+0x464) [0x14f7b70e9baa]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-cudamatrix.so(kaldi::CuMemoryAllocator::MallocPitch(unsigned long, unsigned long, unsigned long*)+0x491) [0x14f7b70ea451]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-cudamatrix.so(kaldi::CuMatrix<float>::Resize(int, int, kaldi::MatrixResizeType, kaldi::MatrixStrideType)+0x26b) [0x14f7b70a6c9d]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-cudamatrix.so(kaldi::CuMatrix<float>::Swap(kaldi::Matrix<float>*)+0x86) [0x14f7b70a80ca]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-cudamatrix.so(kaldi::CuMatrix<float>::Read(std::istream&, bool)+0x5b) [0x14f7b70a8253]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-nnet3.so(kaldi::nnet3::FixedAffineComponent::Read(std::istream&, bool)+0xb4) [0x14f7b86ded88]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-nnet3.so(kaldi::nnet3::Component::ReadNew(std::istream&, bool)+0x117) [0x14f7b86ca6d5]
+/home/aditya.yadavalli/KALDI/kaldi/src/lib/libkaldi-nnet3.so(kaldi::nnet3::Nnet::Read(std::istream&, bool)+0xb61) [0x14f7b8751ef5]
+nnet3-chain-train2(main+0x5b7) [0x40fcfd]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf0) [0x14f7b5a4f830]
+nnet3-chain-train2(_start+0x29) [0x40f679]
+
+WARNING (nnet3-chain-train2[5.5.708~1-fd88b]:Close():kaldi-io.cc:515) Pipe nnet3-copy --learning-rate=0.0018568974566737816 exp/chaina/tdnn2c_sp/2.raw - | had nonzero return status 36096
+kaldi::KaldiFatalError
+# Accounting: time=3 threads=1
+# Ended (code 255) at Tue Jun 16 15:27:32 IST 2020, elapsed time 3 seconds
