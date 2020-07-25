@@ -187,6 +187,11 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
     **Note:** After `lmrescore.sh` and `lmrescore_const_arpa.sh` `score.sh` is called. This script essentially find the WER (or CER) whichever is specified for that the model currently created.
   - `steps/align_si.sh`: Explained in stage 3. Here we align audio frames with triphones (context dependent phones)
 
+- **Stage 5**
+  - `steps/train_lda_mllt.sh`: This script splices across frames, runs LDA to reduce the dimension of the features to 40. Then runs a maximum likelihood algorithm in EM fashion to find better alignments than the already existing ones that we have from tri1 model. We find a diagonalising transform using MLLR. This will be applied to the acoustic model's prediction so that it align better with the features.
+  - Rest of the scripts run at this stage are explained in detail in stage 4 or 3
+ 
+
 
 
 
@@ -205,4 +210,5 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
 - [Povey's lectures. Old and not upto date but very well explained](http://www.danielpovey.com/kaldi-lectures.html)
 - [Very detailed explanation of how Kaldi works. Mostly for Icelandic language](https://skemman.is/bitstream/1946/31280/1/msc_anna_vigdis_2018.pdf)
 - [To understand Kaldi Lattices](https://kaldi-asr.org/doc/lattices.html)
+- [Notes on Splicing. Done before LDA is applied](https://web.stanford.edu/class/linguist205/index_files/Suppl%20handout%204%20-%20Splicing.pdf)
 - Kaldi Forums are pretty active
