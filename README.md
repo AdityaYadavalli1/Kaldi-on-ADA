@@ -187,10 +187,15 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
     **Note:** After `lmrescore.sh` and `lmrescore_const_arpa.sh` `score.sh` is called. This script essentially find the WER (or CER) whichever is specified for that the model currently created.
   - `steps/align_si.sh`: Explained in stage 3. Here we align audio frames with triphones (context dependent phones)
 
+[SAT 25th Jul '20]
 - **Stage 5**
-  - `steps/train_lda_mllt.sh`: This script splices across frames, runs LDA to reduce the dimension of the features to 40. Then runs a maximum likelihood algorithm in EM fashion to find better alignments than the already existing ones that we have from tri1 model. We find a diagonalising transform using MLLR. This will be applied to the acoustic model's prediction so that it align better with the features.
+  - `steps/train_lda_mllt.sh`: This script splices across frames, runs LDA to reduce the dimension of the features to 40. MLLT estimates a linear transform that when applied to GMM's means adapts to a specific speaker. Here, multiple speaker classes can use the same MLL transform. We create these classes using either a decision tree (mostly) or clustering approach.
   - Rest of the scripts run at this stage are explained in detail in stage 4 or 3
- 
+
+- **Stage 6**
+  - `steps/train_sat`: Here, the model is retrained on fMLLR transformed features. fMLLR just means instead of transforming at the acoustic model level like MLLR you transform at the feature level to adapt the model to a specific speaker. This script can be run after just computing delta+delta delta features as well.
+  - Rest of the scripts run at this stage are explained in detail in stage 4 or 3 
+
 
 
 
