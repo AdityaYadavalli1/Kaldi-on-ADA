@@ -98,7 +98,7 @@ In this stage, 5 scripts are called:
   - `local/data_prep.sh`:
   Creates all the important files (wav.scp, transcript, utt2spk, spk2gender, utt2dur) given that the data has SPEAKERS.txt file. This takes source directory as the first argument and destination directory as the second argument.
   - `local/prepare_dict.sh`:
-  Creates all the necessary steps for g2p. If lexicon_nosil.txt is not available, using CMUdict g2p (and Sequitur G2P*) lexicon_nosil.txt. With this all g2p files are created (lexicon.txt, silence.txt, nonsilence.txt, optional.txt, extraquestions.txt) . Arguments need:
+  Creates all the necessary steps for g2p. If lexicon_nosil.txt is not available, using CMUdict g2p (or/and Sequitur G2P*) lexicon_nosil.txt is created. With this, all g2p files are created (lexicon.txt, silence.txt, nonsilence.txt, optional.txt, extraquestions.txt) . Arguments need:
    - 1st argument: LM directory (in our case `data/local/lm`)
    - 2nd argument: G2P model directory (it was not used in our case because we started from stage 3)
    - 3rd argument: destination directory (where all the files made are stored)
@@ -193,8 +193,49 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
   - Rest of the scripts run at this stage are explained in detail in stage 4 or 3
 
 - **Stage 6**
-  - `steps/train_sat`: Here, the model is retrained on fMLLR transformed features. fMLLR just means instead of transforming at the acoustic model level like MLLR you transform at the feature level to adapt the model to a specific speaker. This script can be run after just computing delta+delta delta features as well.
-  - Rest of the scripts run at this stage are explained in detail in stage 4 or 3 
+  - `steps/train_sat`: Here, the model is retrained on fMLLR transformed features. fMLLR just means instead of transforming at the acoustic model level like MLLR you transform at the feature level to adapt the model to a specific speaker (or a set of speakers). This script can be run after just computing delta+delta delta features as well.
+  - Rest of the scripts run at this stage are explained in detail in stage 4 or 3
+
+[SUN 26th Jul '20]
+- **Stage 7**\
+  Since, generating lexicon directly from words doesn't silence in the lexicon we try to rescore the lexicon using silence here.
+  - `steps/get_prons.sh`: The script outputs pronunciation i.e phones for each utterance using the latest acoustic and language model (from the latest alignments). There are a few files generated here for further use. They are:
+    - `prons.*.gz`: The script takes in the latest alignments (`ali*.gz`) turns it into a nbest lattice, adds timestamps to that lattice i.e begin_frame, num_frame (duration), and then convert that nbest lattice to a format in which every word in every utterance has a line for itself. So, the final format in which `prons.*.gz` stores data is
+    ```
+    <utt_id> <begin_frame> <num_frame> <word> <phone1> <phone2> ... <phoneN>
+    ```
+      **Note:** From my understanding, we use nbest lattice but in reality it only stores one word graph with only one path but for the lack of specific 1best command we use nbest command to generate that lattice. Also, these phones are represented using unique numbers at this stage.
+    - `pron_counts.int`: This stores the number of times a particular sequence of phones occur. Format:
+      ```
+        <number_of_times_seq_of_phones_occur> <word> <phone1> <phone2> ... <phoneN>
+      ```
+    - `pron_counts.txt`: This is same as `pron_counts.int` but phone itself is replaced by the number that represents it.
+    - `pron_counts_nowb.txt`: Same as the previous file but phones don't have B,I,S,E tags.
+    - `pron_perutt_nowb.txt`: In this file, each utterance has one line instead of each word having one line. Starting of the sentence is represented using `<s>` and ending using `</s>`. Apart from that each word (including silence using <eps>) is present along with its phone representation after the word. Format:
+    ```
+      <utt_id> <s> <word1> <phone_rep> <word2> <phone_rep> ... <wordN> <phone_rep> </s>
+    ```
+    - `pron_bigram_counts_nowb.txt`: Bigram counts of the words is calculated here. Its format is:
+    ```
+      <bigram_count> <word> <word's_phone_representation>
+    ```
+      **Note:** Here, one should note that the silence is not considered when counting the bigrams.
+    - `sil_counts_nowb.txt`: At this stage, we collect silence/non-silence counts before and after a word and store those counts [silence bigram essentially]. Each word has one line (including `<s> and </s>`). Format:
+    ```
+      <sil-before-count> <nonsil-before-count> <sil-after-count> <nonsil-after-count> <word> <phone1> <phone2> ... <phoneN>
+    ```
+  - `utils/dict_dir_add_pronprobs.sh`: Smoothing is done on these bigram counts (both silence and non-silence). This probability is added to L.fst directly. (I have to read this paper and code in depth). 2 new files lexiconp.txt and lexicon_silprob.txt are created for this.
+  - `utils/prepare_lang.sh`: Explained in stage 1
+  - `local/format_lms.sh`: Explained in stage 1
+  - `utils/build_const_arpa_lm.sh`: Explained in stage 1
+  - `steps/align_fmllr.sh`: Use model tri3b (including SAT) to create better alignments i.e frames to phones.
+
+
+  -  **Stage 8**:\
+    At this we only make a new graph using the previous alignments, decode code it to make a lattice, rescore using new LM and AM. Final HMM-GMM model WERs are based on this lattice/model.
+
+- **Stage 9**\
+  Run a chain TDNN model using these alignments. I am planning to cover that in another document as of now. 
 
 
 
@@ -210,7 +251,7 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
 - [Josh's Kaldi Notes. Good for basic theory](http://jrmeyer.github.io/asr/2016/02/01/Kaldi-notes.html)
 - [Step by Step guide for Modelling ASR with Kaldi. Might not be upto date](http://white.ucc.asn.au/Kaldi-Notes/install_notes)
 - [Malayalam digit recogniser recipe. Could be useful if I want to make a recipe later on](https://github.com/kavyamanohar/malayalam-spoken-digit-recognizer)
-- [Some theory on probabilitistic graph formuation and solving. Useful for decoding](https://drive.google.com/drive/folders/1wmncLdRsY27Av1oNzk7Jaa9xWhxGTPrQ)
+- [Some theory on probabilitistic graph formulation and solving. Useful for decoding](https://drive.google.com/drive/folders/1wmncLdRsY27Av1oNzk7Jaa9xWhxGTPrQ)
 - [Best Series of articles that explain ASR theory](https://medium.com/@jonathan_hui/speech-recognition-series-71fd6784551a)
 - [Povey's lectures. Old and not upto date but very well explained](http://www.danielpovey.com/kaldi-lectures.html)
 - [Very detailed explanation of how Kaldi works. Mostly for Icelandic language](https://skemman.is/bitstream/1946/31280/1/msc_anna_vigdis_2018.pdf)
