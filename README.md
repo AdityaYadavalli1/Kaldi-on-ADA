@@ -231,11 +231,11 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
   - `steps/align_fmllr.sh`: Use model tri3b (including SAT) to create better alignments i.e frames to phones.
 
 
-  -  **Stage 8**:\
-    At this we only make a new graph using the previous alignments, decode code it to make a lattice, rescore using new LM and AM. Final HMM-GMM model WERs are based on this lattice/model.
+-  **Stage 8**:\
+  At this we only make a new graph using the previous alignments, decode code it to make a lattice, rescore using new LM and AM. Final HMM-GMM model WERs are based on this lattice/model.
 
 - **Stage 9**\
-  Run a chain TDNN model using these alignments. I am planning to cover that in another document as of now. 
+  Run a chain TDNN model using these alignments. I am planning to cover that in another document as of now.
 
 
 
