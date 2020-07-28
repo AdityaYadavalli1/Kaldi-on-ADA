@@ -257,4 +257,5 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
 - [Very detailed explanation of how Kaldi works. Mostly for Icelandic language](https://skemman.is/bitstream/1946/31280/1/msc_anna_vigdis_2018.pdf)
 - [To understand Kaldi Lattices](https://kaldi-asr.org/doc/lattices.html)
 - [Notes on Splicing. Done before LDA is applied](https://web.stanford.edu/class/linguist205/index_files/Suppl%20handout%204%20-%20Splicing.pdf)
+- [Columbia Lecture Slides on ASR](http://www.ee.columbia.edu/~stanchen/spring16/e6870/slides/)
 - Kaldi Forums are pretty active
