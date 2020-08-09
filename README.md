@@ -108,7 +108,7 @@ In this stage, 5 scripts are called:
     - 3rd argument: Temporary directory (this script needs a space to store some temporary files)
     - 4th argument: Destination directory
 
-   With these, essentially, it will make **L.fst** (lexicon in fst format. The format used by kaldi to calculate scores) [all of this is usually stored in `data/lang`]
+   With these, essentially, it will make **L.fst** (lexicon in fst format. The format is used by kaldi to calculate scores) [all of this is usually stored in `data/lang`]
   - `local/format_lms.sh`:
     - optional argument: `utils/prepare_lang.sh` destination directory should be source directory for this file (by default it is `data/lang`)
     - 2nd argument: LM directory (`data/local/lm` in this case)
@@ -167,16 +167,16 @@ In stage 3, we train a monophone system. For this, 3 scripts are called:
 
 - **Stage 4**
   - `steps/train_deltas.sh`: This takes number of GMMs for the model to use, maximum number of Gaussians each GMM should use, monophone alignments, training data directory and the language directory (one that contains phones, questions non-silent phones etc). This script calls:
-   - `acc-tree-stats.cc`: This program accumulates the phonetic-context tree based on previously made alignments and returns it. (The context width and centre phone can be given as arguments) [at this stage it is made sure that delta features extracted are taken into consideration]
-   - `sum-tree-stats.cc`:  This program summarises (or is it just sum?) all the stats accumulated (for example if you run `acc-tree-stats.cc` on many processors simultaneously those many files are created. All these files are then combined)
-   - `cluster-phones.cc`: This program takes the statistics found in `sum-tree-stats.cc` and the phones as input and finds out the questions to be asked to make a split in the phonetic-decision tree (or) cluster phones. Here, we cluster based on acoustic similarity of the phones.
-   - `compile-questions.cc`: (Not able to understand what this program this?). This program, taking the output of `cluster-phones.cc` and HMM topology maps these questions to HMM states.
-   - `build-tree.cc`: This finally builds the tree phonetic tree using the statistics and questions found/formed previously. We can configure the tree to have multiple roots (3 for triphones typically)
-   -  `gmm-init-model`: Initialize a GMM acoustic model (e.g. 1.mdl) from a decision tree (e.g. tree), accumulated tree stats (e.g. treeacc), and an HMM model topology
-   - `gmm-mixup.cc`: This program splits existing GMMs to have more gaussian components to capture finer detail. It does this by taking in transition-id statistics (occupation counts 1.occ) and the current GMMs.
-   - `convert-ali.cc`: Given we have new information (triphone phonetic decision tree, new GMM model made by `gmm-mixup.cc`) and the old information (monophone alignments), this program uses both to come up with new set of alignments (triphone alignments)
-   - `compile-train-graphs.cc`: Explained in detail in stage 3 (monophone modelling). Here it is used in triphone context.\
-   Then inside the training loop again an EM algorithm is run (similar to monphone modelling). The following scripts are called: `gmm-align-compiled`, `gmm-acc-stats-ali`, `gmm-est`. All three scripts are explained in detail in monophone modelling.   
+       - `acc-tree-stats.cc`: This program accumulates the phonetic-context tree based on previously made alignments and returns it. (The context width and centre phone can be given as arguments) [at this stage it is made sure that delta features extracted are taken into consideration]
+       - `sum-tree-stats.cc`:  This program summarises (or is it just sum?) all the stats accumulated (for example if you run `acc-tree-stats.cc` on many processors simultaneously those many files are created. All these files are then combined)
+       - `cluster-phones.cc`: This program takes the statistics found in `sum-tree-stats.cc` and the phones as input and finds out the questions to be asked to make a split in the phonetic-decision tree (or) cluster phones. Here, we cluster based on acoustic similarity of the phones.
+       - `compile-questions.cc`: (Not able to understand what this program this?). This program, taking the output of `cluster-phones.cc` and HMM topology maps these questions to HMM states.
+       - `build-tree.cc`: This finally builds the tree phonetic tree using the statistics and questions found/formed previously. We can configure the tree to have multiple roots (3 for triphones typically)
+       -  `gmm-init-model`: Initialize a GMM acoustic model (e.g. 1.mdl) from a decision tree (e.g. tree), accumulated tree stats (e.g. treeacc), and an HMM model topology
+       - `gmm-mixup.cc`: This program splits existing GMMs to have more gaussian components to capture finer detail. It does this by taking in transition-id statistics (occupation counts 1.occ) and the current GMMs.
+       - `convert-ali.cc`: Given we have new information (triphone phonetic decision tree, new GMM model made by `gmm-mixup.cc`) and the old information (monophone alignments), this program uses both to come up with new set of alignments (triphone alignments)
+       - `compile-train-graphs.cc`: Explained in detail in stage 3 (monophone modelling). Here it is used in triphone context.\
+       Then inside the training loop again an EM algorithm is run (similar to monphone modelling). The following scripts are called: `gmm-align-compiled`, `gmm-acc-stats-ali`, `gmm-est`. All three scripts are explained in detail in monophone modelling.   
   - `utils/mkgraph.sh`: Explained in detail in stage 3
   - `steps/decode.sh`: Explained in detail in stage 3
   - `steps/lmrescore.sh`: At this stage the lattice (which essentially contains a graph that encodes n-best hypothesis) is rescored. Here, we decouple acoustic and language modelling scores on lattice, rescore acoustic based on the new model. We also use a more complex language model (since the search space is decreased now) -possibly trained on more data or higher n-gram model. Still have a few doubts here:
