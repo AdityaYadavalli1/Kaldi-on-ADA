@@ -1,3 +1,4 @@
+[this is what I have understood over the years independently. So there might be some factual errors here. If found please report]
 # Kaldi on ADA
 
 [WED-10th June '20]
